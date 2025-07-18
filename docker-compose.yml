@@ -1,0 +1,68 @@
+
+
+services:
+  # Frontend Service (Nginx + React/Vue/etc.)
+  frontend:
+    build:
+      context: ./frontend_blog
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80" # Access the frontend at http://localhost:8080
+    depends_on:
+      - web
+    networks:
+      - blog_network
+    restart: unless-stopped
+
+  # Backend Service (Phoenix)
+  web:
+    build:
+      context: ./backend_blog
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000" # Expose backend API directly on port 4000
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=ecto://backend_blog_user:backend_blog_password@db/backend_blog_dev
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
+      - PHX_HOST=localhost
+    volumes:
+      # Mount the backend code for live-reloading during development
+      - ./backend_blog:/app
+      # Use anonymous volumes to keep compiled artifacts inside the container,
+      # preventing conflicts with host-compiled dependencies from macOS.
+      - /app/_build
+      - /app/deps
+    networks:
+      - blog_network
+    restart: unless-stopped
+
+  # Database Service (MySQL)
+  db:
+    image: mysql:8.0
+    ports:
+      - "3307:3306" # Connect to DB on localhost:3307
+    environment:
+      MYSQL_DATABASE: backend_blog_dev
+      MYSQL_USER: backend_blog_user
+      MYSQL_PASSWORD: backend_blog_password
+      MYSQL_ROOT_PASSWORD: root_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - blog_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql_data:
+
+networks:
+  blog_network:
+    driver: bridge
