@@ -58,6 +58,14 @@ Helper scripts are provided in the root directory for easy management of the app
     ./stop.sh
     ```
 
+## Screenshots
+
+Here's a glimpse of the application in action:
+
+![Blog application screenshot 1](1.png)
+![Blog application screenshot 2](2.png)
+![Blog application screenshot 3](3.png)
+
 ## Manual Database Commands
 
 If you need to run migrations or seeding manually while the application is running, you can use the helper scripts:
