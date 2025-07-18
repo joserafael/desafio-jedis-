@@ -25,7 +25,7 @@ This project includes Docker configuration for easy development setup with MySQL
 ### Phoenix Application
 - **Port**: 4000
 - **Environment**: development
-- **Auto-migration**: Yes (runs on container start)
+- **Auto-migration**: No. Migrations should be run manually.
 
 ## Common Commands
 
@@ -65,10 +65,10 @@ docker-compose logs db
 docker-compose exec web mix ecto.migrate
 
 # Run seeds
-docker-compose exec web mix run priv/repo/seeds.exs
+docker-compose run --rm web mix run priv/repo/seeds.exs
 
 # Run tests
-docker-compose exec web mix test
+docker-compose run --rm web mix test
 
 # Open IEx shell
 docker-compose exec web iex -S mix

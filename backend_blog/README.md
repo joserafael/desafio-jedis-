@@ -21,7 +21,7 @@ The API is available at `http://localhost:4000/api` when the application is runn
 ### Phoenix Application
 - **Port**: 4000
 - **Environment**: development
-- **Auto-migration**: Yes (runs on container start)
+- **Auto-migration**: No. Migrations should be run manually as described in the root README.
 
 ## API Endpoints
 
